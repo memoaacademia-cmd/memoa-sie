@@ -129,7 +129,7 @@ dialog ol{padding-left:20px;margin:14px 0 20px}dialog li{margin:10px 0}dialog sv
 
 <script>
 /* Adresse de l'application étudiante. Même dossier par défaut ; pour la séparer : 'https://app.memoaacademia.com/' (domaine à vérifier avant usage). */
-var APP_URL='https://memoaacademia-cmd.github.io/memoa/';
+var APP_URL='https://app.memoaacademia.com/';
 document.querySelectorAll('[data-app]').forEach(function(a){a.href=APP_URL+a.getAttribute('data-app')});
 var dp=null,note=document.getElementById('note'),ua=navigator.userAgent;
 var ios=/iPhone|iPad|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
