@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Memoa — Tes cours, enfin intelligents</title>
+<title>Memoa — Arrive à l’examen l’esprit tranquille</title>
 <meta name="description" content="Memoa réunit tes cours, tes notes, tes révisions et tes TP au même endroit, avec une IA qui répond à partir de ce que tu as vraiment étudié. Pensé pour les étudiants congolais.">
 <meta name="theme-color" content="#07423B">
 <link rel="canonical" href="https://memoaacademia.com/">
 <meta property="og:type" content="website"><meta property="og:locale" content="fr_FR">
-<meta property="og:title" content="Memoa — Tes cours, enfin intelligents">
+<meta property="og:title" content="Memoa — Arrive à l’examen l’esprit tranquille">
 <meta property="og:description" content="Tes cours, tes notes, tes révisions et tes TP dans un seul espace. Une IA qui répond à partir de tes propres notes.">
 <meta property="og:image" content="https://app.memoaacademia.com/icon-512.png">
 <meta name="twitter:card" content="summary">
@@ -38,6 +38,7 @@ h2{font-size:clamp(32px,5.2vw,62px)}
 .btn.p{background:var(--o);color:#2a1a00;box-shadow:0 12px 30px -10px #f2a33aaa}
 .btn.g{background:var(--g);color:#fff;box-shadow:0 12px 30px -10px #0b5d54aa}
 .btn.l{background:transparent;color:inherit;border-color:currentColor;opacity:.92}
+.btn.xl{min-height:62px;padding:0 38px;font-size:17px}.btn.xl svg{width:22px;height:22px}
 .btn.sm{min-height:42px;padding:0 20px;font-size:14px}.btn svg{width:18px;height:18px}
 .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
 /* header */
@@ -61,7 +62,8 @@ nav{display:flex;align-items:center;gap:24px;height:68px}
 /* hero */
 .hero{background:var(--gd);color:#fff;padding:132px 0 0;overflow:hidden}
 .hero .wrap{display:grid;grid-template-columns:1.02fr 1fr;gap:20px;align-items:center}
-.hero h1{font-size:clamp(44px,7.4vw,92px);letter-spacing:-.045em}
+.hero h1{font-size:clamp(38px,5vw,64px);letter-spacing:-.045em}
+.how{margin-top:16px;font-size:14.5px;color:#b9d6cf}
 .hero .lead{color:#cfe3de}
 .trust{display:flex;flex-wrap:wrap;gap:8px 22px;margin:30px 0 56px;font-size:14.5px;color:#b9d6cf}
 .trust span:before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--m);margin-right:9px}
@@ -181,6 +183,10 @@ footer .wrap{display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:36px}
 footer h4{font:700 14px Sora,system-ui,sans-serif;color:#fff;margin-bottom:14px}footer a{display:block;text-decoration:none;padding:5px 0;opacity:.85}footer a:hover{opacity:1;color:var(--m)}
 footer .brand p{margin-top:14px;max-width:30ch}.legal{grid-column:1/-1;border-top:1px solid #ffffff1c;padding-top:24px;font-size:13.5px;opacity:.7}
 @media(max-width:860px){footer .wrap{grid-template-columns:1fr 1fr}footer .brand{grid-column:1/-1}}
+/* barre d'installation mobile */
+.dock{display:none;position:fixed;left:0;right:0;bottom:0;z-index:35;align-items:center;justify-content:space-between;gap:14px;padding:12px var(--pad) calc(12px + env(safe-area-inset-bottom));background:#07423bf5;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#fff;transform:translateY(110%);transition:transform .35s cubic-bezier(.2,.7,.2,1);box-shadow:0 -10px 30px -12px #0008}
+.dock b{display:block;font:700 15px Sora,system-ui,sans-serif;letter-spacing:-.02em}.dock small{font-size:12.5px;color:#b9d6cf}
+@media(max-width:860px){.dock{display:flex}.dock.v{transform:none}footer{padding-bottom:104px}}
 /* reveal */
 .js .rv{opacity:0;translate:0 28px;transition:opacity .8s,translate .8s cubic-bezier(.2,.7,.2,1)}.js .rv.in{opacity:1;translate:none}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.js .rv{opacity:1;translate:none}}
@@ -192,17 +198,18 @@ footer .brand p{margin-top:14px;max-width:30ch}.legal{grid-column:1/-1;border-to
 <header id="hd"><nav class="wrap" aria-label="Navigation principale">
 <a class="logo" href="#top" aria-label="Memoa, accueil"><img src="img/logo.png" width="32" height="32" alt="">Memoa</a>
 <div class="links"><a href="#fonctions">Fonctionnalités</a><a href="#pourquoi">Pourquoi Memoa</a><a href="#tarifs">Tarifs</a><a href="#faq">FAQ</a></div>
-<div class="end"><a class="login" data-app="#/connexion">Connexion</a><a class="btn p sm" data-app="#/creer-un-compte">Commencer</a></div>
+<div class="end"><a class="login" data-app="#/connexion">Connexion</a><button class="btn p sm" data-install>Installer l’app</button></div>
 <button class="burger" id="bg" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="menu"><span></span><span></span></button>
 </nav></header>
-<div class="menu" id="menu"><a href="#fonctions">Fonctionnalités</a><a href="#pourquoi">Pourquoi Memoa</a><a href="#tarifs">Tarifs</a><a href="#faq">FAQ</a><a data-app="#/connexion">Connexion</a><a class="btn p" data-app="#/creer-un-compte">Commencer gratuitement</a></div>
+<div class="menu" id="menu"><a href="#fonctions">Fonctionnalités</a><a href="#pourquoi">Pourquoi Memoa</a><a href="#tarifs">Tarifs</a><a href="#faq">FAQ</a><a data-app="#/connexion">Connexion</a><button class="btn p" data-install>Installer l’app</button></div>
 
 <main id="main">
 <section class="hero" id="top"><div class="wrap">
 <div>
-<h1>Tes cours, enfin intelligents.</h1>
-<p class="lead">Memoa est l’IA qui connaît tes cours. Tes notes, tes révisions et tes TP au même endroit, avec des réponses qui s’appuient sur ce que tu as vraiment étudié.</p>
-<div class="cta"><a class="btn p" data-app="#/creer-un-compte">Commencer gratuitement</a><a class="btn l" href="#fonctions">Découvrir l’application</a></div>
+<h1>Arrive à l’examen l’esprit tranquille.</h1>
+<p class="lead">Memoa rassemble tes cours, tes notes et tes révisions au même endroit, avec une IA qui te répond à partir de ce que tu as vraiment étudié.</p>
+<div class="cta"><button class="btn p xl" data-install id="heroinstall"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Installer l’app</button><a class="btn l xl" href="#fonctions">Découvrir</a></div>
+<p class="how">Gratuit · iPhone et Android · Sans passer par le Play Store</p>
 <p id="note" role="status"></p>
 <div class="trust"><span>5 jours d’essai complet</span><span>20 points gratuits par jour ensuite</span><span>Révision même sans connexion</span></div>
 </div>
@@ -295,7 +302,7 @@ footer .brand p{margin-top:14px;max-width:30ch}.legal{grid-column:1/-1;border-to
 <div class="plans">
 <div class="plan rv"><h3>Gratuit</h3><p class="per">Pour découvrir Memoa à fond.</p><div class="amt">0 USD</div><p class="per">Aucun paiement pour commencer</p>
 <ul><li>5 jours d’essai complet</li><li>Puis 20 points gratuits par jour pour continuer à utiliser l’IA</li></ul>
-<a class="btn g" data-app="#/creer-un-compte">Commencer gratuitement</a></div>
+<button class="btn g" data-install><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Installer l’app, c’est gratuit</button></div>
 <div class="plan pro rv"><h3>Memoa Premium</h3><p class="per">L’IA généreuse, sans compte à rebours de points.</p><div class="amt">4,50 USD<s>9,99 USD</s></div><p class="per">pour 30 jours · ou 11 000 FC (au lieu de 22 000 FC)</p>
 <ul><li>IA généreuse, sans compte à rebours de points</li><li>Orange Money, Airtel Money, M-Pesa</li></ul>
 <a class="btn p" data-app="#/premium">Passer en Premium</a>
@@ -314,19 +321,21 @@ footer .brand p{margin-top:14px;max-width:30ch}.legal{grid-column:1/-1;border-to
 <section id="faq"><div class="wrap">
 <div class="rv"><h2>Tout ce que tu veux savoir avant de commencer.</h2></div>
 <div class="faq rv">
+<details open><summary>Comment installer Memoa ?</summary><p>Touche « Installer l’app » sur cette page. Memoa n’est pas encore sur le Play Store : elle s’installe directement depuis ton navigateur et apparaît sur l’écran d’accueil de ton téléphone, comme n’importe quelle application. Sur iPhone, ouvre la page dans Safari : Memoa t’affiche alors les étapes à suivre.</p></details>
 <details><summary>Memoa est-il gratuit ?</summary><p>Tu profites de 5 jours d’essai complet, puis de 20 points gratuits par jour pour continuer à utiliser l’IA. Memoa Premium enlève le compte à rebours de points.</p></details>
 <details><summary>Comment payer Memoa Premium ?</summary><p>Par mobile money : Orange Money, Airtel Money ou M-Pesa. Premium coûte 4,50 USD pour 30 jours, ou 11 000 FC.</p></details>
 <details><summary>Puis-je réviser sans connexion ?</summary><p>Oui. Les cartes à retourner et les quiz tirés de tes notes restent disponibles même sans connexion.</p></details>
 <details><summary>Pour quelles universités Memoa est-il pensé ?</summary><p>Les facultés et départements de l’UPN, de l’UNIKIN, de l’ULK, de l’UCC, de l’UPC et d’autres universités sont disponibles dans la Librairie.</p></details>
-<details><summary>Comment installer Memoa ?</summary><p>Touche « Installer l’app » sur cette page. Sur iPhone, ouvre la page dans Safari : Memoa t’affiche alors les étapes à suivre.</p></details>
 </div></div></section>
 
 <section class="final"><div class="wrap">
 <h2 class="rv">Ton prochain chapitre commence maintenant.</h2>
 <p class="lead rv">Donne à tes ambitions académiques les outils qu’elles méritent.</p>
-<div class="cta rv"><a class="btn p" data-app="#/creer-un-compte">Commencer gratuitement</a><button class="btn l" data-install>Installer l’app</button></div></div>
+<div class="cta rv"><button class="btn p xl" data-install><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Installer l’app</button><a class="btn l xl" data-app="#/connexion">J’ai déjà un compte</a></div></div>
 <div class="trame" aria-hidden="true"></div></section>
 </main>
+
+<div class="dock" id="dock" role="complementary" aria-label="Installer Memoa"><span><b>Memoa sur ton téléphone</b><small>Gratuit · sans Play Store</small></span><button class="btn p sm" data-install>Installer</button></div>
 
 <footer><div class="wrap">
 <div class="brand"><a class="logo" href="#top"><img src="img/logo.png" width="32" height="32" alt="">Memoa</a><p>Ton compagnon académique intelligent. Né en République démocratique du Congo.</p></div>
@@ -349,6 +358,13 @@ document.querySelectorAll('[data-install]').forEach(function(b){b.addEventListen
   if(dp){try{dp.prompt();var r=await dp.userChoice;dp=null;note.textContent=r.outcome==='accepted'?'Installation lancée par ton navigateur.':'Installation annulée. Tu peux la relancer à tout moment.'}catch(x){dp=null;location.href=APP_URL+'#/installer'}return}
   location.href=APP_URL+'#/installer';
 })});
+/* Barre d'installation mobile : visible après le hero, masquée près du bloc final */
+(function(){var dock=document.getElementById('dock'),fin=document.querySelector('.final');
+if(standalone){dock.remove();return}
+var nearFinal=false;
+function upd(){dock.classList.toggle('v',scrollY>520&&!nearFinal)}
+if('IntersectionObserver' in window){new IntersectionObserver(function(es){nearFinal=es[0].isIntersecting;upd()},{threshold:.15}).observe(fin)}
+addEventListener('scroll',upd,{passive:true});upd()})();
 /* En-tête + menu mobile */
 var hd=document.getElementById('hd'),bg=document.getElementById('bg'),mn=document.getElementById('menu');
 function sc(){hd.classList.toggle('s',scrollY>40)}addEventListener('scroll',sc,{passive:true});sc();
