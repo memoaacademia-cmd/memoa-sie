@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Tableau de bord · Memoa</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+:root{--g:#0b5d54;--g2:#dff3ee;--ink:#0e1a2b;--mut:#5b6b66;--bg:#f2f6f5;--card:#fff;--line:#d7e0dd;--amb:#e0a526}
+@media (prefers-color-scheme:dark){:root{--g:#3fc2ae;--g2:#12332e;--ink:#e8f0ee;--mut:#9fb2ac;--bg:#0b1412;--card:#111e1b;--line:#223632;--amb:#f0b93a}}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.45}
+.wrap{max-width:980px;margin:0 auto;padding:16px}
+header.top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:4px 0 16px}
+header.top img{width:32px;height:32px;border-radius:8px}
+header.top h1{font-size:20px;margin:0;flex:1;min-width:180px}
+.tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+select,button,input{font:inherit}
+select,.btn{min-height:42px;padding:0 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--ink)}
+.btn{cursor:pointer;font-weight:600}
+.btn.p{background:var(--g);border-color:var(--g);color:#fff}
+.btn:disabled{opacity:.5}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}
+.card h2{font-size:15px;margin:0 0 4px}
+.card .sub{margin:0 0 12px;color:var(--mut);font-size:13px}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+@media(min-width:700px){.kpis{grid-template-columns:repeat(4,1fr)}}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+.kpi b{display:block;font-size:30px;line-height:1.1;color:var(--g)}
+.kpi span{font-size:13px;color:var(--mut)}
+.grid2{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:760px){.grid2{grid-template-columns:1fr 1fr}}
+.hb{display:flex;flex-direction:column;gap:8px}
+.hb .r{display:grid;grid-template-columns:1fr auto;gap:3px 10px;align-items:center;font-size:14px}
+.hb .l{grid-column:1/-1;overflow-wrap:anywhere}
+.hb .bar{height:12px;background:var(--g2);border-radius:99px;overflow:hidden}
+.hb .bar i{display:block;height:100%;background:var(--g);border-radius:99px}
+.hb .v{font-weight:700;min-width:28px;text-align:right}
+.empty{color:var(--mut);font-size:14px;margin:6px 0}
+.login{max-width:380px;margin:12vh auto 0}
+.login h1{font-size:22px;margin:0 0 6px}
+.login p{color:var(--mut);margin:0 0 16px}
+.login label{display:block;font-size:14px;font-weight:600;margin:12px 0 6px}
+.login input{width:100%;min-height:46px;padding:0 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font-size:16px}
+.login .btn{width:100%;margin-top:16px}
+.err{color:#d64545;font-size:14px;margin:10px 0 0;min-height:20px}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--mut);margin-top:6px;flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.foot{color:var(--mut);font-size:12px;text-align:center;margin:18px 0 8px}
+svg text{fill:var(--mut);font-size:10px;font-family:inherit}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+
+<main class="wrap" id="login" hidden>
+  <div class="login card">
+    <h1>Tableau de bord</h1>
+    <p>Réservé à l'équipe Memoa. Connecte-toi avec ton compte.</p>
+    <form id="lf" novalidate>
+      <label for="em">Email</label>
+      <input id="em" type="email" autocomplete="username" inputmode="email">
+      <label for="pw">Mot de passe</label>
+      <input id="pw" type="password" autocomplete="current-password">
+      <p class="err" id="lerr" role="alert"></p>
+      <button class="btn p" id="lbtn" type="submit">Se connecter</button>
+    </form>
+  </div>
+</main>
+
+<main class="wrap" id="app" hidden>
+  <header class="top">
+    <img src="img/logo.png" alt="">
+    <h1>Statistiques du site</h1>
+    <div class="tools">
+      <select id="days" aria-label="Période">
+        <option value="7">7 derniers jours</option>
+        <option value="30" selected>30 derniers jours</option>
+        <option value="90">90 derniers jours</option>
+      </select>
+      <button class="btn" id="refresh" type="button">Actualiser</button>
+      <button class="btn" id="logout" type="button">Quitter</button>
+    </div>
+  </header>
+  <p class="err" id="aerr" role="alert"></p>
+
+  <section class="kpis" aria-label="Chiffres clés">
+    <div class="kpi"><b id="k-today">–</b><span>visites aujourd'hui</span></div>
+    <div class="kpi"><b id="k-visitors">–</b><span>visiteurs uniques</span></div>
+    <div class="kpi"><b id="k-clicks">–</b><span>clics sur « Installer »</span></div>
+    <div class="kpi"><b id="k-installed">–</b><span>installations réussies</span></div>
+  </section>
+
+  <section class="card">
+    <h2>Visites par jour</h2>
+    <p class="sub">Heure de Kinshasa. Les barres vertes sont les visites, la ligne dorée les visiteurs uniques.</p>
+    <div id="daily"></div>
+    <div class="legend"><span><i style="background:var(--g)"></i>Visites</span><span><i style="background:var(--amb)"></i>Visiteurs uniques</span></div>
+  </section>
+
+  <section class="card">
+    <h2>Le parcours des visiteurs</h2>
+    <p class="sub">Combien de personnes arrivent à chaque étape (visiteurs uniques).</p>
+    <div class="hb" id="funnel"></div>
+  </section>
+
+  <div class="grid2">
+    <section class="card"><h2>Où ils cliquent pour installer</h2><p class="sub">Endroit du bouton « Installer l'app ».</p><div class="hb" id="places"></div></section>
+    <section class="card"><h2>D'où ils viennent</h2><p class="sub">Provenance des visiteurs uniques.</p><div class="hb" id="sources"></div></section>
+    <section class="card"><h2>Mobile ou ordinateur</h2><p class="sub">Visiteurs uniques.</p><div class="hb" id="devices"></div></section>
+    <section class="card"><h2>Autres clics</h2><p class="sub">Connexion, création de compte, Premium…</p><div class="hb" id="applinks"></div></section>
+  </div>
+
+  <p class="foot" id="gen"></p>
+</main>
+
+<script>
+/* Mêmes valeurs que sur index.html (l'URL du projet Supabase du site et la clé « publishable » : publiques par conception). */
+var SB_URL='https://srmlgdaxddleufgtqzch.supabase.co',SB_KEY='sb_publishable_tFFsX77ia8ikCjN4NK4WFA_NOvtVfwe';
+
+var $=function(id){return document.getElementById(id)};
+var TOKEN_KEY='memoa_admin_token';
+
+/* Jamais de HTML venant des données : tout passe par ce filtre (la provenance d'un visiteur peut être écrite par n'importe qui). */
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function nf(n){return Number(n||0).toLocaleString('fr-FR')}
+
+function getToken(){try{var t=JSON.parse(sessionStorage.getItem(TOKEN_KEY)||'null');if(t&&t.exp>Date.now())return t.v}catch(e){}return null}
+function setToken(v,sec){try{sessionStorage.setItem(TOKEN_KEY,JSON.stringify({v:v,exp:Date.now()+Math.max(60,(sec||3600)-60)*1000}))}catch(e){}}
+function clearToken(){try{sessionStorage.removeItem(TOKEN_KEY)}catch(e){}}
+
+function showLogin(msg){$('app').hidden=true;$('login').hidden=false;$('lerr').textContent=msg||'';$('pw').value=''}
+function showApp(){$('login').hidden=true;$('app').hidden=false}
+
+$('lf').addEventListener('submit',async function(e){
+  e.preventDefault();
+  var em=$('em').value.trim(),pw=$('pw').value;
+  if(!em||!pw){$('lerr').textContent='Entre ton email et ton mot de passe.';return}
+  var btn=$('lbtn');btn.disabled=true;btn.textContent='Connexion…';$('lerr').textContent='';
+  try{
+    var r=await fetch(SB_URL+'/auth/v1/token?grant_type=password',{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY},body:JSON.stringify({email:em,password:pw})});
+    var j=await r.json().catch(function(){return{}});
+    if(!r.ok||!j.access_token){$('lerr').textContent=(r.status===400||r.status===401)?'Email ou mot de passe incorrect.':'Connexion impossible pour le moment. Réessaie.';return}
+    setToken(j.access_token,j.expires_in);
+    showApp();load();
+  }catch(x){$('lerr').textContent='Pas de connexion. Réessaie dans un instant.'}
+  finally{btn.disabled=false;btn.textContent='Se connecter'}
+});
+
+$('logout').onclick=function(){clearToken();showLogin('')};
+$('refresh').onclick=function(){load()};
+$('days').onchange=function(){load()};
+
+async function load(){
+  var t=getToken();if(!t){showLogin('Ta session a expiré. Reconnecte-toi.');return}
+  $('aerr').textContent='';$('refresh').disabled=true;
+  try{
+    var r=await fetch(SB_URL+'/rest/v1/rpc/site_stats',{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+t},body:JSON.stringify({days:Number($('days').value)})});
+    if(r.status===401){clearToken();showLogin('Ta session a expiré. Reconnecte-toi.');return}
+    if(r.status===403||r.status===404){var b=await r.json().catch(function(){return{}});
+      if(r.status===403||/forbidden|permission/i.test(JSON.stringify(b))){clearToken();showLogin('Ce compte n\u2019a pas accès au tableau de bord.');return}
+      $('aerr').textContent='La fonction du tableau de bord est introuvable : exécute site_dashboard.sql dans Supabase.';return}
+    if(!r.ok){$('aerr').textContent='Impossible de charger les chiffres pour le moment (code '+r.status+').';return}
+    render(await r.json());
+  }catch(x){$('aerr').textContent='Pas de connexion. Réessaie dans un instant.'}
+  finally{$('refresh').disabled=false}
+}
+
+function hbars(id,rows,fmt){
+  var el=$(id);
+  if(!rows||!rows.length){el.innerHTML='<p class="empty">Pas encore de données.</p>';return}
+  var max=Math.max.apply(null,rows.map(function(r){return r.n}))||1;
+  el.innerHTML=rows.map(function(r){
+    var label=fmt?fmt(r.label):r.label;
+    return '<div class="r"><span class="l" title="'+esc(label)+'">'+esc(label)+'</span><span class="bar"><i style="width:'+Math.max(3,Math.round(r.n/max*100))+'%"></i></span><span class="v">'+nf(r.n)+'</span></div>'
+  }).join('')
+}
+
+var PLACES={header:'En-tête du site',hero:'Grand bouton du haut',tarifs:'Section tarifs',dock:'Barre du bas (mobile)',final:'Bloc final',footer:'Bas de page',autre:'Autre'};
+var DEVICES={mobile:'Téléphone',desktop:'Ordinateur',inconnu:'Inconnu'};
+var TARGETS={'#/connexion':'Connexion','#/creer-un-compte':'Créer un compte','#/premium':'Premium','#/installer':'Page d\u2019installation','#/aide':'Centre d\u2019aide'};
+
+function dailyChart(rows,days){
+  var el=$('daily');
+  /* On complète les jours sans visite pour que la courbe soit juste. */
+  var map={};rows.forEach(function(r){map[r.day]=r});
+  var list=[],now=new Date();
+  for(var i=days-1;i>=0;i--){var d=new Date(now.getTime()-i*864e5);
+    var k=new Date(d.getTime()+36e5).toISOString().slice(0,10); /* Kinshasa = UTC+1 */
+    list.push(map[k]||{day:k,visits:0,visitors:0,clicks:0})}
+  var max=Math.max.apply(null,list.map(function(r){return Math.max(r.visits,r.visitors)}));
+  if(!max){el.innerHTML='<p class="empty">Pas encore de visites sur cette période.</p>';return}
+  var W=640,H=190,pl=30,pr=6,pt=8,pb=22,iw=W-pl-pr,ih=H-pt-pb,n=list.length,step=iw/n,bw=Math.max(2,Math.min(22,step*.66));
+  var top=max<5?5:Math.ceil(max/4)*4;
+  function y(v){return pt+ih-(v/top)*ih}
+  var s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="Visites par jour">';
+  for(var g=0;g<=4;g++){var v=top*g/4,yy=y(v);s+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+yy+'" y2="'+yy+'" stroke="var(--line)" stroke-width="1"/><text x="'+(pl-4)+'" y="'+(yy+3)+'" text-anchor="end">'+Math.round(v)+'</text>'}
+  list.forEach(function(r,i){var x=pl+step*i+(step-bw)/2,h=ih-(y(r.visits)-pt);
+    s+='<rect x="'+x+'" y="'+y(r.visits)+'" width="'+bw+'" height="'+Math.max(0,h)+'" rx="2" fill="var(--g)"><title>'+esc(r.day)+' : '+r.visits+' visites, '+r.visitors+' visiteurs</title></rect>'});
+  var pts=list.map(function(r,i){return(pl+step*i+step/2)+','+y(r.visitors)}).join(' ');
+  s+='<polyline points="'+pts+'" fill="none" stroke="var(--amb)" stroke-width="2" stroke-linejoin="round"/>';
+  var ticks=n>14?[0,Math.floor(n/2),n-1]:list.map(function(_,i){return i});
+  ticks.forEach(function(i){var p=list[i].day.split('-');s+='<text x="'+(pl+step*i+step/2)+'" y="'+(H-6)+'" text-anchor="middle">'+p[2]+'/'+p[1]+'</text>'});
+  el.innerHTML=s+'</svg>';
+}
+
+function render(d){
+  var t=d.totals||{},f=d.funnel||{};
+  $('k-today').textContent=nf((d.today||{}).visits);
+  $('k-visitors').textContent=nf(t.visitors);
+  $('k-clicks').textContent=nf(t.install_clicks);
+  $('k-installed').textContent=nf(t.installed);
+  dailyChart(d.daily||[],d.days||30);
+  var seen=f.seen||0;
+  function pct(n){return seen?' ('+Math.round(n/seen*100)+' %)':''}
+  var steps=[{label:'Ont vu le site',n:seen},{label:'Ont défilé jusqu\u2019à la moitié',n:f.scroll50||0},{label:'Sont allés jusqu\u2019en bas',n:f.scroll90||0},{label:'Ont cliqué sur « Installer »',n:f.clicked||0},{label:'Ont installé l\u2019app',n:f.installed||0}];
+  hbars('funnel',seen?steps:[],function(l){return l});
+  /* Pourcentage ajouté après coup, sans HTML venant des données. */
+  var rows=$('funnel').querySelectorAll('.r .v');steps.forEach(function(s,i){if(rows[i]&&i>0)rows[i].textContent=nf(s.n)+pct(s.n)});
+  hbars('places',d.places,function(l){return PLACES[l]||l});
+  hbars('sources',d.sources,function(l){return l==='direct'?'Direct (lien tapé, favori, appli)':l});
+  hbars('devices',d.devices,function(l){return DEVICES[l]||l});
+  hbars('applinks',d.app_links,function(l){return TARGETS[l]||l});
+  var g=new Date(d.generated_at);$('gen').textContent='Mis à jour le '+g.toLocaleDateString('fr-FR')+' à '+g.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+}
+
+if(getToken()){showApp();load()}else showLogin('');
+</script>
+</body>
+</html>
