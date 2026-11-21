@@ -92,6 +92,20 @@ svg text{fill:var(--mut);font-size:10px;font-family:inherit}
     <div class="kpi"><b id="k-installed">–</b><span>installations réussies</span></div>
   </section>
 
+  <section class="kpis" aria-label="Applications sur l'écran d'accueil">
+    <div class="kpi"><b id="i-total">–</b><span>apps sur l'écran d'accueil</span></div>
+    <div class="kpi"><b id="i-android">–</b><span>sur Android</span></div>
+    <div class="kpi"><b id="i-ios">–</b><span>sur iPhone / iPad</span></div>
+    <div class="kpi"><b id="i-new">–</b><span>nouvelles sur la période</span></div>
+  </section>
+  <p class="err" id="ierr" role="alert"></p>
+  <section class="kpis" aria-label="Activité de l'application">
+    <div class="kpi"><b id="i-active">–</b><span>apps ouvertes ces 7 derniers jours</span></div>
+    <div class="kpi"><b id="i-launches">–</b><span>ouvertures depuis l'écran d'accueil</span></div>
+    <div class="kpi"><b id="i-return">–</b><span>visiteurs qui reviennent</span></div>
+    <div class="kpi"><b id="i-peak">–</b><span>heure la plus active</span></div>
+  </section>
+
   <section class="card">
     <h2>Visites par jour</h2>
     <p class="sub">Heure de Kinshasa. Les barres vertes sont les visites, la ligne dorée les visiteurs uniques.</p>
@@ -109,6 +123,7 @@ svg text{fill:var(--mut);font-size:10px;font-family:inherit}
     <section class="card"><h2>Où ils cliquent pour installer</h2><p class="sub">Endroit du bouton « Installer l'app ».</p><div class="hb" id="places"></div></section>
     <section class="card"><h2>D'où ils viennent</h2><p class="sub">Provenance des visiteurs uniques.</p><div class="hb" id="sources"></div></section>
     <section class="card"><h2>Mobile ou ordinateur</h2><p class="sub">Visiteurs uniques.</p><div class="hb" id="devices"></div></section>
+    <section class="card"><h2>Heures d'affluence</h2><p class="sub">Visites par heure de la journée (heure de Kinshasa).</p><div class="hb" id="hours"></div></section>
     <section class="card"><h2>Autres clics</h2><p class="sub">Connexion, création de compte, Premium…</p><div class="hb" id="applinks"></div></section>
   </div>
 
@@ -165,6 +180,31 @@ async function load(){
     render(await r.json());
   }catch(x){$('aerr').textContent='Pas de connexion. Réessaie dans un instant.'}
   finally{$('refresh').disabled=false}
+  loadInstalls(t);
+}
+
+/* Applications sur l'écran d'accueil : appel séparé, pour que les autres chiffres s'affichent même si cette partie n'est pas encore activée. */
+async function loadInstalls(t){
+  $('ierr').textContent='';
+  try{
+    var r=await fetch(SB_URL+'/rest/v1/rpc/site_install_stats',{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+t},body:JSON.stringify({days:Number($('days').value)})});
+    if(r.status===404){$('ierr').textContent='Exécute site_install_stats.sql dans Supabase pour activer les chiffres d\u2019installation.';return}
+    if(!r.ok){$('ierr').textContent='Chiffres d\u2019installation indisponibles (code '+r.status+').';return}
+    renderInstalls(await r.json());
+  }catch(x){$('ierr').textContent='Chiffres d\u2019installation indisponibles pour le moment.'}
+}
+function renderInstalls(d){
+  var p={};(d.by_platform||[]).forEach(function(r){p[r.label]=r.n});
+  $('i-total').textContent=nf(d.total_installed);
+  $('i-android').textContent=nf(p.android);
+  $('i-ios').textContent=nf(p.ios);
+  $('i-new').textContent=nf(d.new_in_period);
+  $('i-active').textContent=nf(d.active_7d);
+  $('i-launches').textContent=nf(d.launches_period);
+  $('i-return').textContent=nf(d.returning_visitors);
+  var hrs=d.peak_hours||[];
+  $('i-peak').textContent=hrs.length?hrs[0].label+' h':'–';
+  hbars('hours',hrs,function(l){return l+' h – '+(Number(l)+1)+' h'});
 }
 
 function hbars(id,rows,fmt){

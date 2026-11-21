@@ -8,3 +8,9 @@ Liens app : variable APP_URL en bas de index.html (https://app.memoaacademia.com
 - Bouton « Installer l'app » placé en grand dans le hero, dans l'en-tête, dans les tarifs et en bas de page (tous utilisent data-install).
 - Barre d'installation fixe sur mobile (#dock), visible après le hero, masquée près du bloc final et dans l'app installée.
 - FAQ « Comment installer Memoa ? » passée en premier et ouverte, avec la mention « pas encore sur le Play Store ».
+
+## Mise à jour : installations sur l'écran d'accueil
+- admin.html : nouvelles sections (apps sur l'écran d'accueil, Android / iPhone, nouvelles, actives 7 jours, ouvertures, visiteurs qui reviennent, heures d'affluence).
+- outils/site_install_stats.sql : à exécuter une fois dans Supabase (SQL Editor).
+- outils/memoa-install-tracker.js : à coller dans l'application (app.memoaacademia.com). Sans lui, les installations ne peuvent pas être comptées.
+- index.html : compte aussi « installation acceptée » (Android) et l'ouverture depuis l'écran d'accueil.
