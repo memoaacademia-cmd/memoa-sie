@@ -355,7 +355,7 @@ addEventListener('appinstalled',function(){dp=null;note.textContent='Memoa est i
 document.querySelectorAll('[data-install]').forEach(function(b){b.addEventListener('click',async function(ev){
   ev.preventDefault();
   if(standalone){location.href=APP_URL;return}
-  if(dp){try{dp.prompt();var r=await dp.userChoice;dp=null;if(r.outcome==='accepted'&&window.memoaTrack)memoaTrack('install_accepted');note.textContent=r.outcome==='accepted'?'Installation lancée par ton navigateur.':'Installation annulée. Tu peux la relancer à tout moment.'}catch(x){dp=null;location.href=APP_URL+'#/installer'}return}
+  if(dp){try{dp.prompt();var r=await dp.userChoice;dp=null;if(r.outcome==='accepted'&&window.memoaTrack)memoaTrack('install_accepted');note.textContent=r.outcome==='accepted'?'Installation en cours… Ça peut prendre une ou deux minutes. Garde cette page ouverte, on te confirmera ici. Sinon, vérifie ton écran d’accueil dans quelques minutes.':'Installation annulée. Tu peux la relancer à tout moment.'}catch(x){dp=null;location.href=APP_URL+'#/installer'}return}
   location.href=APP_URL+'#/installer';
 })});
 /* Barre d'installation mobile : visible après le hero, masquée près du bloc final */
